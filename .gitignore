@@ -1,0 +1,5 @@
+venv/
+skin-class-env/
+.env/
+__pycache__/
+*.pyc
