@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Skin Disease Detection</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: "Segoe UI", sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: linear-gradient(135deg, #f6f7fb, #f0e9ff);
+            min-height: 100vh;
+        }
+
+        /* ---------- NAVBAR ---------- */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 40px;
+            background: linear-gradient(135deg, #8e7cf0, #f7a6d8);
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar h1 {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 600;
+        }
+
+        .nav-links button {
+            background: rgba(255,255,255,0.25);
+            border: none;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 25px;
+            margin-left: 10px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .nav-links button:hover {
+            background: rgba(255,255,255,0.4);
+        }
+
+        /* ---------- HERO ---------- */
+        .hero {
+            max-width: 1100px;
+            margin: 40px auto 20px;
+            background: linear-gradient(135deg, #bda7f3, #ffd0eb);
+            padding: 35px;
+            border-radius: 25px;
+            color: white;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+        }
+
+        .hero h2 {
+            margin: 0;
+            font-size: 30px;
+        }
+
+        .hero p {
+            margin-top: 10px;
+            font-size: 16px;
+            opacity: 0.95;
+        }
+
+        /* ---------- MAIN GRID ---------- */
+        .container {
+            max-width: 1100px;
+            margin: 30px auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 22px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+        }
+
+        .card h3 {
+            margin-top: 0;
+            font-size: 22px;
+        }
+
+        /* ---------- UPLOAD ---------- */
+        .upload-box {
+            border: 2px dashed #c9bdf8;
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .upload-box input {
+            font-size: 14px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #7b6cf6, #5a4de8);
+            border: none;
+            color: white;
+            padding: 12px 28px;
+            border-radius: 25px;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        /* ---------- PREDICTION ---------- */
+        .result-title {
+            color: #19a55a;
+            font-size: 26px;
+            margin-bottom: 8px;
+        }
+
+        .pill {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-right: 8px;
+            margin-top: 6px;
+        }
+
+        .confidence {
+            background: #e6fff2;
+            color: #0c8a4a;
+        }
+
+        .severity {
+            background: #ede8ff;
+            color: #5a4de8;
+        }
+
+        .image-preview img {
+            max-height: 260px;
+            border-radius: 18px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.25);
+            margin-bottom: 20px;
+        }
+
+        /* ---------- MODAL ---------- */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.55);
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            width: 420px;
+            max-height: 80vh;
+            overflow-y: auto;
+            border-radius: 20px;
+        }
+
+        .modal-content h3 {
+            margin-top: 0;
+        }
+
+        .close-btn {
+            float: right;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        ul {
+            padding-left: 18px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        @media (max-width: 900px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+    <h1>Skin Disease Detection</h1>
+    <div class="nav-links">
+        <button onclick="document.getElementById('upload').scrollIntoView()">Upload</button>
+        <button onclick="document.getElementById('result').scrollIntoView()">Result</button>
+        <button onclick="openHistory()">History</button>
+    </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+    <h2>AI-Powered Skin Disease Detection</h2>
+    <p>
+        Upload a skin image and let AI assist in identifying common skin conditions
+        with confidence and care.
+    </p>
+</div>
+
+<!-- MAIN -->
+<div class="container">
+
+    <!-- UPLOAD -->
+    <div class="card" id="upload">
+        <h3>Upload Skin Image</h3>
+
+        <form method="POST" enctype="multipart/form-data">
+            <div class="upload-box">
+                <input type="file" name="image" required>
+            </div>
+            <button class="btn" type="submit">Analyze Image</button>
+        </form>
+    </div>
+
+    <!-- RESULT -->
+    <div class="card" id="result">
+        <h3>Prediction Result</h3>
+
+        {% if prediction %}
+            {% if image_path %}
+            <div class="image-preview" style="text-align:center;">
+                <img src="{{ image_path }}">
+            </div>
+            {% endif %}
+
+            <div class="result-title">{{ prediction|capitalize }}</div>
+
+            <span class="pill confidence">Confidence: {{ confidence }}%</span>
+            <span class="pill severity">Severity: {{ severity }}</span>
+
+            <h4>Description</h4>
+            <p>{{ info.description }}</p>
+
+            <h4>Precautions</h4>
+            <p>{{ info.precautions }}</p>
+        {% else %}
+            <p style="opacity:0.6;">Upload an image to see prediction.</p>
+        {% endif %}
+    </div>
+
+</div>
+
+<!-- HISTORY MODAL -->
+<div class="modal" id="historyModal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeHistory()">✖</span>
+        <h3>Prediction History</h3>
+
+        {% if history %}
+        <ul>
+            {% for h in history %}
+                <li>
+                    <strong>{{ h.disease|capitalize }}</strong> –
+                    {{ h.confidence }}% ({{ h.severity }})
+                </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+            <p>No predictions yet.</p>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+    function openHistory() {
+        document.getElementById("historyModal").style.display = "flex";
+    }
+    function closeHistory() {
+        document.getElementById("historyModal").style.display = "none";
+    }
+</script>
+
+</body>
+</html>
